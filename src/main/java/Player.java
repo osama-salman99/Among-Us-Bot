@@ -1,25 +1,32 @@
+import net.dv8tion.jda.api.entities.Member;
+
 public class Player {
     private final PlayerPanel playerPanel;
+    private final String name;
+    private final Member member;
     private boolean killed;
-    private String id;
-    private String name;
 
-    public Player(String id, String name) {
-        this.id = id;
-        this.name = name;
+    public Player(Member member) {
+        this.member = member;
+        this.name = member.getEffectiveName();
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
     }
 
     public void mute() {
-        // TODO
+        muteToggle(true);
     }
 
     public void unmute() {
         if (killed) {
             return;
         }
-        // TODO
+        muteToggle(false);
+    }
+
+    private void muteToggle(boolean mute) {
+        //noinspection ResultOfMethodCallIgnored
+        member.mute(mute);
     }
 
     public void kill() {

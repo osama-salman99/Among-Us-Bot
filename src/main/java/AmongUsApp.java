@@ -27,10 +27,6 @@ public class AmongUsApp {
         addButtons();
         createOverlay();
         showFrame();
-
-        addPlayer(new Player("21", "4342"));
-        addPlayer(new Player("21", "4342"));
-        addPlayer(new Player("21", "4342"));
     }
 
     private void initializeFrame() {
