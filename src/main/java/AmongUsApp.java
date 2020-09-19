@@ -1,3 +1,5 @@
+import net.dv8tion.jda.api.entities.Member;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -135,5 +137,10 @@ public class AmongUsApp {
         players.add(player);
         overlayFrame.add(player.getPlayerPanel());
         updateOverlaySize();
+    }
+
+    public void removePlayer(Member member) {
+        int index = players.indexOf(new Player(member));
+        overlayFrame.remove(players.remove(index).getPlayerPanel());
     }
 }

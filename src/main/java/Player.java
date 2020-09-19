@@ -49,4 +49,15 @@ public class Player {
     public String getName() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Player) {
+            return member.equals(((Player) object).member);
+        }
+        if (object instanceof Member) {
+            return member.equals(object);
+        }
+        return false;
+    }
 }

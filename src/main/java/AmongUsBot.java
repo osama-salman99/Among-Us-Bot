@@ -1,5 +1,8 @@
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 
 public class AmongUsBot extends ListenerAdapter {
@@ -25,6 +29,7 @@ public class AmongUsBot extends ListenerAdapter {
             e.printStackTrace();
         }
         jda.addEventListener(this);
+        addCurrentPlayers();
     }
 
     private static void readToken() {
@@ -38,11 +43,34 @@ public class AmongUsBot extends ListenerAdapter {
         token = scanner.nextLine();
     }
 
+    private void addCurrentPlayers() {
+        List<Guild> guilds = jda.getGuilds();
+        for (Guild guild : guilds) {
+            List<GuildChannel> channels = guild.getChannels();
+            for (GuildChannel channel : channels) {
+                List<Member> members = channel.getMembers();
+                for (Member member : members) {
+                    addPlayer(member);
+                }
+            }
+        }
+    }
+
     @Override
     public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
         super.onGuildVoiceUpdate(event);
         if (event.getChannelJoined() != null) {
-            app.addPlayer(new Player(event.getEntity()));
+            addPlayer(event.getEntity());
+        } else if (event.getChannelLeft() != null) {
+            removePlayer(event.getEntity());
         }
+    }
+
+    private void addPlayer(Member member) {
+        app.addPlayer(new Player(member));
+    }
+
+    private void removePlayer(Member member) {
+        app.removePlayer(member);
     }
 }
