@@ -8,7 +8,6 @@ public class AmongUsBot extends ListenerAdapter {
 
     public AmongUsBot(AmongUsApp app) {
         this.app = app;
-
     }
 
     @Override
