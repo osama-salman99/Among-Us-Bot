@@ -142,5 +142,6 @@ public class AmongUsApp {
     public void removePlayer(Member member) {
         int index = players.indexOf(new Player(member));
         overlayFrame.remove(players.remove(index).getPlayerPanel());
+        overlayFrame.repaint();
     }
 }
