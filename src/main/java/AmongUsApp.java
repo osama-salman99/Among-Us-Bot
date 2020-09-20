@@ -16,15 +16,12 @@ public class AmongUsApp {
     private static final int COLUMN_HEIGHT = 50;
     private static final int INCREASE_VALUE = 10;
     private final ArrayList<Player> players;
-    private final int SCREEN_HEIGHT;
     private JFrame mainFrame;
     private JFrame overlayFrame;
     private boolean overlayShown;
     private int currentWidth;
 
     public AmongUsApp() {
-        Rectangle rectangle = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-        SCREEN_HEIGHT = (int) rectangle.getMaxY();
         currentWidth = (MAXIMUM_WIDTH + MINIMUM_WIDTH) / 2;
         players = new ArrayList<>();
         overlayShown = false;
@@ -128,7 +125,8 @@ public class AmongUsApp {
 
     private void showOverlay() {
         overlayFrame.setVisible(true);
-        overlayFrame.setLocation(0, SCREEN_HEIGHT - overlayFrame.getHeight());
+        Rectangle rectangle = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        overlayFrame.setLocation(0, (int) rectangle.getMaxY() - overlayFrame.getHeight());
     }
 
     private void increaseSize() {
@@ -167,7 +165,7 @@ public class AmongUsApp {
         refreshOverlay();
     }
 
-    private synchronized void refreshOverlay() {
+    private void refreshOverlay() {
         updateOverlaySize();
         if (overlayFrame.isVisible()) {
             hideOverlay();
