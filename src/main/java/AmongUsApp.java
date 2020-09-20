@@ -2,8 +2,8 @@ import net.dv8tion.jda.api.entities.Member;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class AmongUsApp {
@@ -86,40 +86,58 @@ public class AmongUsApp {
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
 
-        muteAllButton.addActionListener(new ActionListener() {
+        muteAllButton.addActionListener(e -> muteAll());
+        muteAllButton.addMouseListener(new MouseListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
                 muteAllButton.setForeground(Color.YELLOW);
-                new Thread(new Runnable() {
-                    @Override
-                    public synchronized void run() {
-                        try {
-                            wait(200);
-                        } catch (InterruptedException exception) {
-                            exception.printStackTrace();
-                        }
-                        muteAllButton.setForeground(Color.RED);
-                    }
-                }).start();
-                muteAll();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                muteAllButton.setForeground(Color.RED);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
             }
         });
-        unmuteAllButton.addActionListener(new ActionListener() {
+        unmuteAllButton.addActionListener(e -> unmuteAll());
+        unmuteAllButton.addMouseListener(new MouseListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
                 unmuteAllButton.setForeground(Color.YELLOW);
-                new Thread(new Runnable() {
-                    @Override
-                    public synchronized void run() {
-                        try {
-                            wait(200);
-                        } catch (InterruptedException exception) {
-                            exception.printStackTrace();
-                        }
-                        unmuteAllButton.setForeground(Color.GREEN);
-                    }
-                }).start();
-                unmuteAll();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                unmuteAllButton.setForeground(Color.GREEN);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
             }
         });
 

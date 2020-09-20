@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class PlayerPanel extends JPanel {
     private static final String KILL_TEXT = "Kill";
@@ -14,19 +16,19 @@ public class PlayerPanel extends JPanel {
     }
 
     private void initializeButtons() {
-        JTextField nameLabel = new JTextField(player.getName());
+        JTextField nameTextField = new JTextField(player.getName());
         JButton killButton = new JButton(KILL_TEXT);
 
         killButton.setForeground(Color.WHITE);
-        nameLabel.setForeground(Color.WHITE);
+        nameTextField.setForeground(Color.WHITE);
 
         killButton.setOpaque(false);
         killButton.setFocusPainted(false);
         killButton.setBorderPainted(false);
         killButton.setContentAreaFilled(false);
 
-        nameLabel.setOpaque(false);
-        nameLabel.setBorder(null);
+        nameTextField.setOpaque(false);
+        nameTextField.setBorder(null);
 
         killButton.addActionListener(event -> {
             if (!player.isKilled()) {
@@ -38,7 +40,23 @@ public class PlayerPanel extends JPanel {
             }
         });
 
-        add(nameLabel);
+        nameTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (nameTextField.getText().equals(player.getName())) {
+                    nameTextField.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (nameTextField.getText().equals("")) {
+                    nameTextField.setText(player.getName());
+                }
+            }
+        });
+
+        add(nameTextField);
         add(killButton);
     }
 }
