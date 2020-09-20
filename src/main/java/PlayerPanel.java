@@ -20,15 +20,15 @@ public class PlayerPanel extends JPanel {
         JButton killButton = new JButton(KILL_TEXT);
 
         killButton.setForeground(Color.WHITE);
-        nameTextField.setForeground(Color.WHITE);
-
         killButton.setOpaque(false);
         killButton.setFocusPainted(false);
         killButton.setBorderPainted(false);
         killButton.setContentAreaFilled(false);
 
+        nameTextField.setForeground(Color.WHITE);
         nameTextField.setOpaque(false);
         nameTextField.setBorder(null);
+        nameTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
         killButton.addActionListener(event -> {
             if (!player.isKilled()) {
