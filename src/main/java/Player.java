@@ -9,7 +9,7 @@ public class Player {
 
     public Player(Member member) {
         this.member = member;
-        this.name = member.getEffectiveName();
+        this.name = "@" + member.getEffectiveName();
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
     }
