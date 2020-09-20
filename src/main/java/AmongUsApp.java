@@ -2,6 +2,8 @@ import net.dv8tion.jda.api.entities.Member;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class AmongUsApp {
@@ -84,8 +86,42 @@ public class AmongUsApp {
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
 
-        muteAllButton.addActionListener(event -> muteAll());
-        unmuteAllButton.addActionListener(event -> unmuteAll());
+        muteAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                muteAllButton.setForeground(Color.YELLOW);
+                new Thread(new Runnable() {
+                    @Override
+                    public synchronized void run() {
+                        try {
+                            wait(200);
+                        } catch (InterruptedException exception) {
+                            exception.printStackTrace();
+                        }
+                        muteAllButton.setForeground(Color.RED);
+                    }
+                }).start();
+                muteAll();
+            }
+        });
+        unmuteAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                unmuteAllButton.setForeground(Color.YELLOW);
+                new Thread(new Runnable() {
+                    @Override
+                    public synchronized void run() {
+                        try {
+                            wait(200);
+                        } catch (InterruptedException exception) {
+                            exception.printStackTrace();
+                        }
+                        unmuteAllButton.setForeground(Color.GREEN);
+                    }
+                }).start();
+                unmuteAll();
+            }
+        });
 
         muteAllButton.setForeground(Color.RED);
         muteAllButton.setOpaque(false);

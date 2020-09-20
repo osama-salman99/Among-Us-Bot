@@ -35,7 +35,7 @@ public class PlayerPanel extends JPanel {
                     @Override
                     public synchronized void run() {
                         try {
-                            wait(500);
+                            wait(200);
                         } catch (InterruptedException exception) {
                             exception.printStackTrace();
                         }
