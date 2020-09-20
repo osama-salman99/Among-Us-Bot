@@ -1,8 +1,8 @@
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +24,9 @@ public class AmongUsBot extends ListenerAdapter {
             readToken();
         }
         try {
-            jda = JDABuilder.createDefault(token).build();
-        } catch (LoginException e) {
-            e.printStackTrace();
+            jda = JDABuilder.createDefault(token).build().awaitReady();
+        } catch (LoginException | InterruptedException exception) {
+            exception.printStackTrace();
         }
         jda.addEventListener(this);
         addCurrentPlayers();
@@ -45,14 +45,19 @@ public class AmongUsBot extends ListenerAdapter {
 
     private void addCurrentPlayers() {
         List<Guild> guilds = jda.getGuilds();
+        System.out.println("Guilds = " + guilds.size() + "\n");
         for (Guild guild : guilds) {
-            List<GuildChannel> channels = guild.getChannels();
-            for (GuildChannel channel : channels) {
+            System.out.println("Guild : " + guild);
+            List<VoiceChannel> channels = guild.getVoiceChannels();
+            for (VoiceChannel channel : channels) {
+                System.out.println("Channel: " + channel);
                 List<Member> members = channel.getMembers();
                 for (Member member : members) {
+                    System.out.println("Member: " + member);
                     addPlayer(member);
                 }
             }
+            System.out.println();
         }
     }
 
