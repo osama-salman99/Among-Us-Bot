@@ -31,12 +31,17 @@ public class PlayerPanel extends JPanel {
             @Override
             public synchronized void actionPerformed(ActionEvent e) {
                 killButton.setForeground(Color.YELLOW);
-                try {
-                    wait(500);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-                killButton.setForeground(Color.WHITE);
+                new Thread(new Runnable() {
+                    @Override
+                    public synchronized void run() {
+                        try {
+                            wait(500);
+                        } catch (InterruptedException exception) {
+                            exception.printStackTrace();
+                        }
+                        killButton.setForeground(Color.WHITE);
+                    }
+                }).start();
                 if (!player.isKilled()) {
                     player.kill();
                     killButton.setText(UN_KILL_TEXT);
