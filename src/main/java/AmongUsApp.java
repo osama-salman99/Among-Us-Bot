@@ -14,7 +14,7 @@ public class AmongUsApp {
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
     private static final int COLUMN_HEIGHT = 50;
-    private static final int INCREASE_VALUE = 20;
+    private static final int INCREASE_VALUE = 10;
     private final ArrayList<Player> players;
     private final int SCREEN_HEIGHT;
     private JFrame mainFrame;
@@ -77,6 +77,7 @@ public class AmongUsApp {
         overlayFrame = new JFrame();
         overlayFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         overlayFrame.setUndecorated(true);
+        overlayFrame.setAlwaysOnTop(true);
         overlayFrame.setSize(currentWidth, COLUMN_HEIGHT);
         overlayFrame.setLayout(new GridLayout(0, 1));
 

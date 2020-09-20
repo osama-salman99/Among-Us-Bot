@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class PlayerPanel extends JPanel {
     private static final String KILL_TEXT = "Kill";
@@ -7,11 +8,12 @@ public class PlayerPanel extends JPanel {
 
     public PlayerPanel(Player player) {
         this.player = player;
+        setLayout(new GridLayout(1, 2));
         initializeButtons();
     }
 
     private void initializeButtons() {
-        JLabel nameLabel = new JLabel(player.getName());
+        JLabel nameLabel = new JLabel(player.getName(), SwingConstants.CENTER);
         JButton killButton = new JButton(KILL_TEXT);
 
         killButton.addActionListener(event -> {
