@@ -40,6 +40,7 @@ public class AmongUsApp {
         mainFrame = new JFrame(APP_NAME);
         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setSize(300, 200);
+        mainFrame.setEnabled(false);
     }
 
     private void addButtons() {
@@ -226,5 +227,17 @@ public class AmongUsApp {
             hideOverlay();
             showOverlay();
         }
+    }
+
+    public String getPassword() {
+        String password = JOptionPane.showInputDialog(mainFrame, "Please enter your server's password");
+        if (password == null) {
+            System.exit(0);
+        }
+        return password;
+    }
+
+    public void enableFrame() {
+        mainFrame.setEnabled(true);
     }
 }
