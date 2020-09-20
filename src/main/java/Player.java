@@ -27,6 +27,7 @@ public class Player {
 
     private void muteToggle(boolean mute) {
         member.mute(mute).submit();
+        System.out.println(name + " got unmuted");
     }
 
     public void kill() {
