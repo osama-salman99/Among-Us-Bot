@@ -19,7 +19,7 @@ public class Player {
     }
 
     public void mute() {
-        muteToggle(muted);
+        muteToggle(true);
         System.out.println(name + " got muted");
     }
 
@@ -27,7 +27,7 @@ public class Player {
         if (killed) {
             return;
         }
-        muteToggle(muted);
+        muteToggle(false);
     }
 
     private void muteToggle(boolean mute) {
