@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AmongUsBot extends ListenerAdapter {
+    private static final String TOKEN_FILE_PATH = "res/token_file.txt";
     private static String token;
     private final AmongUsApp app;
     private JDA jda;
@@ -35,7 +36,7 @@ public class AmongUsBot extends ListenerAdapter {
     private static void readToken() {
         Scanner scanner;
         try {
-            scanner = new Scanner(new File("res/token_file.txt"));
+            scanner = new Scanner(new File(TOKEN_FILE_PATH));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
