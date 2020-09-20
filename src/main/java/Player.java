@@ -1,11 +1,11 @@
 import net.dv8tion.jda.api.entities.Member;
 
 public class Player {
+    private static boolean muted;
     private final PlayerPanel playerPanel;
     private final String name;
     private final Member member;
     private boolean killed;
-    private boolean muted;
 
     public Player(Member member) {
         this.member = member;
@@ -14,8 +14,12 @@ public class Player {
         this.playerPanel = new PlayerPanel(this);
     }
 
+    public static void setMuted(boolean muted) {
+        Player.muted = muted;
+    }
+
     public void mute() {
-        muteToggle(muted = true);
+        muteToggle(muted);
         System.out.println(name + " got muted");
     }
 
@@ -23,7 +27,7 @@ public class Player {
         if (killed) {
             return;
         }
-        muteToggle(muted = false);
+        muteToggle(muted);
     }
 
     private void muteToggle(boolean mute) {

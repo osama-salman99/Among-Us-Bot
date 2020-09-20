@@ -112,12 +112,14 @@ public class AmongUsApp {
         for (Player player : players) {
             player.mute();
         }
+        Player.setMuted(true);
     }
 
     private void unmuteAll() {
         for (Player player : players) {
             player.unmute();
         }
+        Player.setMuted(false);
     }
 
     private void hideOverlay() {
