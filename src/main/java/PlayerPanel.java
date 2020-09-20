@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class PlayerPanel extends JPanel {
     private static final String KILL_TEXT = "Kill";
@@ -16,7 +14,7 @@ public class PlayerPanel extends JPanel {
     }
 
     private void initializeButtons() {
-        JLabel nameLabel = new JLabel(player.getName(), SwingConstants.CENTER);
+        JTextField nameLabel = new JTextField(player.getName());
         JButton killButton = new JButton(KILL_TEXT);
 
         killButton.setForeground(Color.WHITE);
@@ -27,28 +25,15 @@ public class PlayerPanel extends JPanel {
         killButton.setBorderPainted(false);
         killButton.setContentAreaFilled(false);
 
-        killButton.addActionListener(new ActionListener() {
-            @Override
-            public synchronized void actionPerformed(ActionEvent e) {
-                killButton.setForeground(Color.YELLOW);
-                new Thread(new Runnable() {
-                    @Override
-                    public synchronized void run() {
-                        try {
-                            wait(200);
-                        } catch (InterruptedException exception) {
-                            exception.printStackTrace();
-                        }
-                        killButton.setForeground(Color.WHITE);
-                    }
-                }).start();
-                if (!player.isKilled()) {
-                    player.kill();
-                    killButton.setText(UN_KILL_TEXT);
-                } else {
-                    player.unKill();
-                    killButton.setText(KILL_TEXT);
-                }
+        nameLabel.setOpaque(false);
+
+        killButton.addActionListener(event -> {
+            if (!player.isKilled()) {
+                player.kill();
+                killButton.setText(UN_KILL_TEXT);
+            } else {
+                player.unKill();
+                killButton.setText(KILL_TEXT);
             }
         });
 
