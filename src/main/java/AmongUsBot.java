@@ -35,7 +35,7 @@ public class AmongUsBot extends ListenerAdapter {
     private static void readToken() {
         Scanner scanner;
         try {
-            scanner = new Scanner(new File("D:\\osama\\OneDrive\\Documents\\Other\\token_file.txt"));
+            scanner = new Scanner(new File("res/token_file.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;

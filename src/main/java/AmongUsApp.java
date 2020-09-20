@@ -25,7 +25,7 @@ public class AmongUsApp {
     public AmongUsApp() {
         Rectangle rectangle = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         SCREEN_HEIGHT = (int) rectangle.getMaxY();
-        currentWidth = MAXIMUM_WIDTH;
+        currentWidth = (MAXIMUM_WIDTH + MINIMUM_WIDTH)/ 2;
         players = new ArrayList<>();
         overlayShown = false;
         initializeFrame();
@@ -65,7 +65,6 @@ public class AmongUsApp {
                 overlayButton.setText(HIDE_OVERLAY_TEXT);
                 showOverlay();
             }
-
             overlayShown = !overlayShown;
         });
 
