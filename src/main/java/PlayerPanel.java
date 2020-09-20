@@ -26,6 +26,7 @@ public class PlayerPanel extends JPanel {
         killButton.setContentAreaFilled(false);
 
         nameLabel.setOpaque(false);
+        nameLabel.setBorder(null);
 
         killButton.addActionListener(event -> {
             if (!player.isKilled()) {
