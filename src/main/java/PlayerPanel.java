@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PlayerPanel extends JPanel {
     private static final String KILL_TEXT = "Kill";
@@ -25,13 +27,23 @@ public class PlayerPanel extends JPanel {
         killButton.setBorderPainted(false);
         killButton.setContentAreaFilled(false);
 
-        killButton.addActionListener(event -> {
-            if (!player.isKilled()) {
-                player.kill();
-                killButton.setText(UN_KILL_TEXT);
-            } else {
-                player.unKill();
-                killButton.setText(KILL_TEXT);
+        killButton.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                killButton.setForeground(Color.YELLOW);
+                try {
+                    wait(500);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+                killButton.setForeground(Color.WHITE);
+                if (!player.isKilled()) {
+                    player.kill();
+                    killButton.setText(UN_KILL_TEXT);
+                } else {
+                    player.unKill();
+                    killButton.setText(KILL_TEXT);
+                }
             }
         });
 
