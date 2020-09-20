@@ -5,6 +5,7 @@ public class Player {
     private final String name;
     private final Member member;
     private boolean killed;
+    private boolean muted;
 
     public Player(Member member) {
         this.member = member;
@@ -14,7 +15,7 @@ public class Player {
     }
 
     public void mute() {
-        muteToggle(true);
+        muteToggle(muted = true);
         System.out.println(name + " got muted");
     }
 
@@ -22,7 +23,7 @@ public class Player {
         if (killed) {
             return;
         }
-        muteToggle(false);
+        muteToggle(muted = false);
     }
 
     private void muteToggle(boolean mute) {
@@ -37,6 +38,9 @@ public class Player {
 
     public void unKill() {
         killed = false;
+        if (!muted) {
+            unmute();
+        }
     }
 
     public PlayerPanel getPlayerPanel() {
