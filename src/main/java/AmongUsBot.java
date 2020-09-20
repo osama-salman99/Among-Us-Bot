@@ -17,9 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AmongUsBot extends ListenerAdapter {
-    private static final String TOKEN_FILE_PATH = "res/token_file.txt";
     private static final String PASSWORD_INIT = "Password is: ";
     private static final Pattern PATTERN = Pattern.compile("^" + PASSWORD_INIT + "[a-zA-Z0-9]+$");
+    private static final String TOKEN_FILE_PATH = "res/token_file.txt";
     private static String token;
     private final AmongUsApp app;
     private JDA jda;
