@@ -15,6 +15,7 @@ public class Player {
 
     public void mute() {
         muteToggle(true);
+        System.out.println(name + " got muted");
     }
 
     public void unmute() {
@@ -25,8 +26,7 @@ public class Player {
     }
 
     private void muteToggle(boolean mute) {
-        //noinspection ResultOfMethodCallIgnored
-        member.mute(mute);
+        member.mute(mute).submit();
     }
 
     public void kill() {

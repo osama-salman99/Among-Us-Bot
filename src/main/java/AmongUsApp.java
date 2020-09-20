@@ -32,6 +32,7 @@ public class AmongUsApp {
         addButtons();
         createOverlay();
         showFrame();
+        Runtime.getRuntime().addShutdownHook(new Thread(this::unmuteAll));
     }
 
     private void initializeFrame() {
