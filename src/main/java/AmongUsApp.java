@@ -79,6 +79,7 @@ public class AmongUsApp {
         overlayFrame.setAlwaysOnTop(true);
         overlayFrame.setSize(currentWidth, COLUMN_HEIGHT);
         overlayFrame.setLayout(new GridLayout(0, 1));
+        overlayFrame.setOpacity(0.80F);
 
         JPanel mutePanel = new JPanel(new GridLayout(1, 2));
         JButton muteAllButton = new JButton(MUTE_TEXT);
@@ -87,8 +88,22 @@ public class AmongUsApp {
         muteAllButton.addActionListener(event -> muteAll());
         unmuteAllButton.addActionListener(event -> unmuteAll());
 
+        muteAllButton.setForeground(Color.RED);
+        muteAllButton.setOpaque(false);
+        muteAllButton.setFocusPainted(false);
+        muteAllButton.setBorderPainted(false);
+        muteAllButton.setContentAreaFilled(false);
+
+        unmuteAllButton.setForeground(Color.GREEN);
+        unmuteAllButton.setOpaque(false);
+        unmuteAllButton.setFocusPainted(false);
+        unmuteAllButton.setBorderPainted(false);
+        unmuteAllButton.setContentAreaFilled(false);
+
         mutePanel.add(muteAllButton);
         mutePanel.add(unmuteAllButton);
+
+        mutePanel.setBackground(Color.BLACK);
 
         overlayFrame.add(mutePanel);
     }

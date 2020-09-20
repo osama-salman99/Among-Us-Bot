@@ -9,12 +9,21 @@ public class PlayerPanel extends JPanel {
     public PlayerPanel(Player player) {
         this.player = player;
         setLayout(new GridLayout(1, 2));
+        setBackground(Color.BLACK);
         initializeButtons();
     }
 
     private void initializeButtons() {
         JLabel nameLabel = new JLabel(player.getName(), SwingConstants.CENTER);
         JButton killButton = new JButton(KILL_TEXT);
+
+        killButton.setForeground(Color.WHITE);
+        nameLabel.setForeground(Color.WHITE);
+
+        killButton.setOpaque(false);
+        killButton.setFocusPainted(false);
+        killButton.setBorderPainted(false);
+        killButton.setContentAreaFilled(false);
 
         killButton.addActionListener(event -> {
             if (!player.isKilled()) {
