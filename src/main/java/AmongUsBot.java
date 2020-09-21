@@ -25,11 +25,13 @@ public class AmongUsBot extends ListenerAdapter {
     private JDA jda;
     private Guild guild;
     private String password;
+    private boolean confirmed;
 
     public AmongUsBot(AmongUsApp app) {
         this.app = app;
         this.guild = null;
         this.password = null;
+        this.confirmed = false;
         if (token == null) {
             readToken();
         }
@@ -44,6 +46,7 @@ public class AmongUsBot extends ListenerAdapter {
             do {
                 password = app.getPassword();
             } while (!password.equals(AmongUsBot.this.password));
+            confirmed = true;
             app.enableFrame();
             addCurrentPlayers();
         }).start();
@@ -77,16 +80,27 @@ public class AmongUsBot extends ListenerAdapter {
     @Override
     public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
         super.onGuildVoiceUpdate(event);
-        if (event.getChannelJoined() != null) {
-            addPlayer(event.getEntity());
-        } else if (event.getChannelLeft() != null) {
-            removePlayer(event.getEntity());
+        if (!confirmed) {
+            return;
+        }
+        VoiceChannel channel;
+        if ((channel = event.getChannelJoined()) != null) {
+            if (guild.equals(channel.getGuild())) {
+                addPlayer(event.getEntity());
+            }
+        } else if ((channel = event.getChannelLeft()) != null) {
+            if (guild.equals(channel.getGuild())) {
+                removePlayer(event.getEntity());
+            }
         }
     }
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
+        if (confirmed) {
+            return;
+        }
         String message = event.getMessage().getContentRaw();
         Matcher matcher = PATTERN.matcher(message);
         if (!matcher.matches()) {
