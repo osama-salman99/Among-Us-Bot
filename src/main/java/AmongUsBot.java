@@ -84,13 +84,14 @@ public class AmongUsBot extends ListenerAdapter {
             return;
         }
         VoiceChannel channel;
+        Member member = event.getEntity();
         if ((channel = event.getChannelJoined()) != null) {
             if (guild.equals(channel.getGuild())) {
-                addPlayer(event.getEntity());
+                addPlayer(member);
             }
         } else if ((channel = event.getChannelLeft()) != null) {
             if (guild.equals(channel.getGuild())) {
-                removePlayer(event.getEntity());
+                removePlayer(member);
             }
         }
     }
@@ -112,9 +113,11 @@ public class AmongUsBot extends ListenerAdapter {
 
     private void addPlayer(Member member) {
         app.addPlayer(new Player(member));
+        System.out.println(member.getEffectiveName() + " joined");
     }
 
     private void removePlayer(Member member) {
         app.removePlayer(member);
+        System.out.println(member.getEffectiveName() + " disconnected");
     }
 }
