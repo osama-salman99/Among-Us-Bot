@@ -12,6 +12,9 @@ public class Player {
         this.name = "@" + member.getEffectiveName();
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
+        if (allMuted) {
+            mute();
+        }
     }
 
     public static void setAllMuted(boolean allMuted) {

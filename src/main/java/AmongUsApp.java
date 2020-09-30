@@ -43,7 +43,7 @@ public class AmongUsApp {
     }
 
     private void addButtons() {
-        JPanel mainPanel = new JPanel(new GridLayout(4, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
         JLabel sizeTextArea = new JLabel(SIZE_PANEL_TEXT, SwingConstants.CENTER);
         JPanel sizeButtonsPanel = new JPanel(new GridLayout(1, 2));
         JButton increaseSizeButton = new JButton("+");
