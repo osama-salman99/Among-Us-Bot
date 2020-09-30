@@ -7,6 +7,7 @@ public class PlayerPanel extends JPanel {
     private static final String KILL_TEXT = "Kill";
     private static final String UN_KILL_TEXT = "Unkill";
     private final Player player;
+    private JButton killButton;
 
     public PlayerPanel(Player player) {
         this.player = player;
@@ -17,7 +18,7 @@ public class PlayerPanel extends JPanel {
 
     private void initializeButtons() {
         JTextField nameTextField = new JTextField(player.getName());
-        JButton killButton = new JButton(KILL_TEXT);
+        killButton = new JButton(KILL_TEXT);
 
         killButton.setForeground(Color.WHITE);
         killButton.setOpaque(false);
@@ -33,10 +34,8 @@ public class PlayerPanel extends JPanel {
         killButton.addActionListener(event -> {
             if (!player.isKilled()) {
                 player.kill();
-                killButton.setText(UN_KILL_TEXT);
             } else {
                 player.unKill();
-                killButton.setText(KILL_TEXT);
             }
         });
 
@@ -58,5 +57,13 @@ public class PlayerPanel extends JPanel {
 
         add(nameTextField);
         add(killButton);
+    }
+
+    public void putKillText() {
+        killButton.setText(KILL_TEXT);
+    }
+
+    public void putUnKillText() {
+        killButton.setText(UN_KILL_TEXT);
     }
 }

@@ -14,7 +14,7 @@ public class AmongUsApp {
     private static final String RESTART_TEXT = "Restart";
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
-    private static final int COLUMN_HEIGHT = 25;
+    private static final int COLUMN_HEIGHT = 40;
     private static final int INCREASE_VALUE = 10;
     private final ArrayList<Player> players;
     private final int SCREEN_HEIGHT;
@@ -83,6 +83,7 @@ public class AmongUsApp {
         overlayFrame.setOpacity(0.80F);
 
         JPanel mutePanel = new JPanel(new GridLayout(1, 2));
+        JPanel restartPanel = new JPanel(new GridLayout(1, 1));
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
         JButton restartButton = new JButton(RESTART_TEXT);
@@ -182,14 +183,20 @@ public class AmongUsApp {
         unmuteAllButton.setContentAreaFilled(false);
 
         restartButton.setForeground(Color.WHITE);
+        restartButton.setOpaque(false);
+        restartButton.setFocusPainted(false);
+        restartButton.setBorderPainted(false);
+        restartButton.setContentAreaFilled(false);
 
         mutePanel.add(muteAllButton);
         mutePanel.add(unmuteAllButton);
+        restartPanel.add(restartButton);
 
         mutePanel.setBackground(Color.BLACK);
+        restartPanel.setBackground(Color.BLACK);
 
         overlayFrame.add(mutePanel);
-        overlayFrame.add(restartButton);
+        overlayFrame.add(restartPanel);
     }
 
     private void muteAll() {

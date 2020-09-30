@@ -40,11 +40,13 @@ public class Player {
 
     public void kill() {
         killed = true;
+        playerPanel.putUnKillText();
         mute();
     }
 
     public void unKill() {
         killed = false;
+        playerPanel.putKillText();
         if (!allMuted) {
             unmute();
         }
