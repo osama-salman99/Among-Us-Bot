@@ -1,7 +1,7 @@
 import net.dv8tion.jda.api.entities.Member;
 
 public class Player {
-    private static boolean muted;
+    private static boolean allMuted;
     private final PlayerPanel playerPanel;
     private final String name;
     private final Member member;
@@ -14,8 +14,8 @@ public class Player {
         this.playerPanel = new PlayerPanel(this);
     }
 
-    public static void setMuted(boolean muted) {
-        Player.muted = muted;
+    public static void setAllMuted(boolean allMuted) {
+        Player.allMuted = allMuted;
     }
 
     public void mute() {
@@ -42,7 +42,7 @@ public class Player {
 
     public void unKill() {
         killed = false;
-        if (!muted) {
+        if (!allMuted) {
             unmute();
         }
     }
@@ -62,10 +62,10 @@ public class Player {
     @Override
     public boolean equals(Object object) {
         if (object instanceof Player) {
-            return member.equals(((Player) object).member);
+            return member.getEffectiveName().equals(((Player) object).getName());
         }
         if (object instanceof Member) {
-            return member.equals(object);
+            return member.getEffectiveName().equals(((Member) object).getEffectiveName());
         }
         return false;
     }

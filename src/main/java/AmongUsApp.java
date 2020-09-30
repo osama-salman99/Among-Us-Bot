@@ -1,5 +1,3 @@
-import net.dv8tion.jda.api.entities.Member;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -13,9 +11,10 @@ public class AmongUsApp {
     private static final String HIDE_OVERLAY_TEXT = "Hide overlay";
     private static final String MUTE_TEXT = "Mute";
     private static final String UNMUTE_TEXT = "Unmute";
+    private static final String RESTART_TEXT = "Restart";
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
-    private static final int COLUMN_HEIGHT = 50;
+    private static final int COLUMN_HEIGHT = 25;
     private static final int INCREASE_VALUE = 10;
     private final ArrayList<Player> players;
     private final int SCREEN_HEIGHT;
@@ -44,7 +43,7 @@ public class AmongUsApp {
     }
 
     private void addButtons() {
-        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(4, 1));
         JLabel sizeTextArea = new JLabel(SIZE_PANEL_TEXT, SwingConstants.CENTER);
         JPanel sizeButtonsPanel = new JPanel(new GridLayout(1, 2));
         JButton increaseSizeButton = new JButton("+");
@@ -56,8 +55,6 @@ public class AmongUsApp {
 
         sizeButtonsPanel.add(increaseSizeButton);
         sizeButtonsPanel.add(decreaseSizeButton);
-        mainPanel.add(sizeTextArea);
-        mainPanel.add(sizeButtonsPanel);
 
         overlayButton.addActionListener(event -> {
             if (overlayShown) {
@@ -70,6 +67,8 @@ public class AmongUsApp {
             overlayShown = !overlayShown;
         });
 
+        mainPanel.add(sizeTextArea);
+        mainPanel.add(sizeButtonsPanel);
         mainPanel.add(overlayButton);
         mainFrame.add(mainPanel);
     }
@@ -86,8 +85,9 @@ public class AmongUsApp {
         JPanel mutePanel = new JPanel(new GridLayout(1, 2));
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
+        JButton restartButton = new JButton(RESTART_TEXT);
 
-        muteAllButton.addActionListener(e -> muteAll());
+        muteAllButton.addActionListener(event -> muteAll());
         muteAllButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -114,7 +114,7 @@ public class AmongUsApp {
 
             }
         });
-        unmuteAllButton.addActionListener(e -> unmuteAll());
+        unmuteAllButton.addActionListener(event -> unmuteAll());
         unmuteAllButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -141,6 +141,33 @@ public class AmongUsApp {
 
             }
         });
+        restartButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                restartButton.setForeground(Color.YELLOW);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                restartButton.setForeground(Color.WHITE);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        restartButton.addActionListener(event -> restartGame());
 
         muteAllButton.setForeground(Color.RED);
         muteAllButton.setOpaque(false);
@@ -154,26 +181,29 @@ public class AmongUsApp {
         unmuteAllButton.setBorderPainted(false);
         unmuteAllButton.setContentAreaFilled(false);
 
+        restartButton.setForeground(Color.WHITE);
+
         mutePanel.add(muteAllButton);
         mutePanel.add(unmuteAllButton);
 
         mutePanel.setBackground(Color.BLACK);
 
         overlayFrame.add(mutePanel);
+        overlayFrame.add(restartButton);
     }
 
     private void muteAll() {
         for (Player player : players) {
-            player.mute();
+            new Thread(player::mute).start();
         }
-        Player.setMuted(true);
+        Player.setAllMuted(true);
     }
 
     private void unmuteAll() {
         for (Player player : players) {
-            player.unmute();
+            new Thread(player::unmute).start();
         }
-        Player.setMuted(false);
+        Player.setAllMuted(false);
     }
 
     private void hideOverlay() {
@@ -210,13 +240,16 @@ public class AmongUsApp {
     }
 
     public void addPlayer(Player player) {
+        if (players.contains(player)) {
+            removePlayer(player);
+        }
         players.add(player);
         overlayFrame.add(player.getPlayerPanel());
         refreshOverlay();
     }
 
-    public void removePlayer(Member member) {
-        int index = players.indexOf(new Player(member));
+    public void removePlayer(Player player) {
+        int index = players.indexOf(player);
         overlayFrame.remove(players.remove(index).getPlayerPanel());
         refreshOverlay();
     }
@@ -239,5 +272,16 @@ public class AmongUsApp {
 
     public void enableFrame() {
         mainFrame.setEnabled(true);
+    }
+
+    private void restartGame() {
+        unKillAll();
+        unmuteAll();
+    }
+
+    private void unKillAll() {
+        for (Player player : players) {
+            player.unKill();
+        }
     }
 }

@@ -117,7 +117,7 @@ public class AmongUsBot extends ListenerAdapter {
     }
 
     private void removePlayer(Member member) {
-        app.removePlayer(member);
+        app.removePlayer(new Player(member));
         System.out.println(member.getEffectiveName() + " disconnected");
     }
 }
