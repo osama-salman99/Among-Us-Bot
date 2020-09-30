@@ -5,11 +5,13 @@ public class Player {
     private final PlayerPanel playerPanel;
     private final String name;
     private final Member member;
+    private final String discordHandle;
     private boolean killed;
 
     public Player(Member member) {
         this.member = member;
-        this.name = "@" + member.getEffectiveName();
+        this.discordHandle = member.getEffectiveName();
+        this.name = "@" + discordHandle;
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
     }
@@ -59,10 +61,14 @@ public class Player {
         return name;
     }
 
+    public String getDiscordHandle() {
+        return discordHandle;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object instanceof Player) {
-            return member.getEffectiveName().equals(((Player) object).getName());
+            return member.getEffectiveName().equals(((Player) object).getDiscordHandle());
         }
         if (object instanceof Member) {
             return member.getEffectiveName().equals(((Member) object).getEffectiveName());
