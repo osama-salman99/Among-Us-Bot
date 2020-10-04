@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class AmongUsApp {
@@ -14,6 +15,10 @@ public class AmongUsApp {
     private static final String RESTART_TEXT = "Restart";
     private static final String AUT_DET_STOP_TEXT = "Stop auto detection";
     private static final String AUT_DET_RESUME_TEXT = "Resume auto detection";
+    private static final String UNKNOWN_TEXT = "Unknown";
+    private static final String LOBBY_TEXT = "Lobby";
+    private static final String IN_GAME_TEXT = "In-game";
+    private static final String VOTING_TEXT = "Voting";
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
     private static final int COLUMN_HEIGHT = 40;
@@ -24,6 +29,7 @@ public class AmongUsApp {
     private final int SCREEN_HEIGHT;
     private JFrame mainFrame;
     private JFrame overlayFrame;
+    private JLabel stateLabel;
     private Thread autoDetectionThread;
     private boolean overlayShown;
     private boolean autoDetectionOn;
@@ -31,6 +37,7 @@ public class AmongUsApp {
 
     public AmongUsApp() {
         SCREEN_HEIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        System.out.println(SCREEN_HEIGHT);
         currentWidth = (MAXIMUM_WIDTH + MINIMUM_WIDTH) / 2;
         players = new ArrayList<>();
         overlayShown = false;
@@ -51,7 +58,7 @@ public class AmongUsApp {
     }
 
     private void addButtons() {
-        JPanel mainPanel = new JPanel(new GridLayout(3, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(4, 1));
         JLabel sizeTextArea = new JLabel(SIZE_PANEL_TEXT, SwingConstants.CENTER);
         JPanel sizeButtonsPanel = new JPanel(new GridLayout(1, 2));
         JButton increaseSizeButton = new JButton("+");
@@ -106,6 +113,7 @@ public class AmongUsApp {
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
         JButton restartButton = new JButton(RESTART_TEXT);
+        stateLabel = new JLabel(UNKNOWN_TEXT);
 
         muteAllButton.addActionListener(event -> muteAll());
         muteAllButton.addMouseListener(new MouseListener() {
@@ -208,6 +216,7 @@ public class AmongUsApp {
         mutePanel.setBackground(Color.BLACK);
         restartPanel.setBackground(Color.BLACK);
 
+        overlayFrame.add(stateLabel);
         overlayFrame.add(mutePanel);
         overlayFrame.add(restartPanel);
     }
@@ -323,21 +332,27 @@ public class AmongUsApp {
             @Override
             public synchronized void run() {
                 while (autoDetectionOn) {
-                    int state = Comparator.getState(screenCapturer.getScreenshot());
+                    BufferedImage screenshot = screenCapturer.getScreenshot();
+                    int state = Comparator.getState(screenshot);
                     switch (state) {
                         case Comparator.IN_GAME:
                             System.out.println("State: in-game");
+                            stateLabel.setText(IN_GAME_TEXT);
                             muteAll();
                             break;
                         case Comparator.VOTING:
                             System.out.println("State: voting");
+                            stateLabel.setText(VOTING_TEXT);
                             unmuteAll();
                             break;
                         case Comparator.LOBBY:
                             System.out.println("State: lobby");
+                            stateLabel.setText(LOBBY_TEXT);
                             restartGame();
+                            break;
                         case Comparator.UNKNOWN:
                             System.out.println("State: unknown");
+                            stateLabel.setText(UNKNOWN_TEXT);
                             // Do nothing
                             break;
                     }

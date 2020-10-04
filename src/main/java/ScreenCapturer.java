@@ -16,7 +16,11 @@ public class ScreenCapturer {
             exception.printStackTrace();
             throw new RuntimeException(exception);
         }
-        this.screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        DisplayMode displayMode = GraphicsEnvironment
+                .getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDisplayMode();
+        this.screenRect = new Rectangle(displayMode.getWidth(), displayMode.getHeight());
         this.on = true;
     }
 
