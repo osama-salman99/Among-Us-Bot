@@ -12,15 +12,21 @@ public class AmongUsApp {
     private static final String MUTE_TEXT = "Mute";
     private static final String UNMUTE_TEXT = "Unmute";
     private static final String RESTART_TEXT = "Restart";
+    private static final String AUT_DET_STOP_TEXT = "Stop auto detection";
+    private static final String AUT_DET_RESUME_TEXT = "Resume auto detection";
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
     private static final int COLUMN_HEIGHT = 40;
     private static final int INCREASE_VALUE = 10;
+    private static final int AUT_DET_DELAY = 1000; // in milliseconds
     private final ArrayList<Player> players;
+    private final ScreenCapturer screenCapturer;
     private final int SCREEN_HEIGHT;
     private JFrame mainFrame;
     private JFrame overlayFrame;
+    private Thread autoDetectionThread;
     private boolean overlayShown;
+    private boolean autoDetectionOn;
     private int currentWidth;
 
     public AmongUsApp() {
@@ -28,6 +34,8 @@ public class AmongUsApp {
         currentWidth = (MAXIMUM_WIDTH + MINIMUM_WIDTH) / 2;
         players = new ArrayList<>();
         overlayShown = false;
+        autoDetectionOn = true;
+        screenCapturer = new ScreenCapturer();
         initializeFrame();
         addButtons();
         createOverlay();
@@ -49,9 +57,19 @@ public class AmongUsApp {
         JButton increaseSizeButton = new JButton("+");
         JButton decreaseSizeButton = new JButton("-");
         JButton overlayButton = new JButton(SHOW_OVERLAY_TEXT);
+        JButton autoDetectionButton = new JButton(AUT_DET_STOP_TEXT);
 
         increaseSizeButton.addActionListener(event -> increaseSize());
         decreaseSizeButton.addActionListener(event -> decreaseSize());
+        autoDetectionButton.addActionListener(e -> {
+            if (autoDetectionOn) {
+                stopAutoDetection();
+                autoDetectionButton.setText(AUT_DET_RESUME_TEXT);
+            } else {
+                resumeAutoDetection();
+                autoDetectionButton.setText(AUT_DET_STOP_TEXT);
+            }
+        });
 
         sizeButtonsPanel.add(increaseSizeButton);
         sizeButtonsPanel.add(decreaseSizeButton);
@@ -70,6 +88,7 @@ public class AmongUsApp {
         mainPanel.add(sizeTextArea);
         mainPanel.add(sizeButtonsPanel);
         mainPanel.add(overlayButton);
+        mainPanel.add(autoDetectionButton);
         mainFrame.add(mainPanel);
     }
 
@@ -119,7 +138,6 @@ public class AmongUsApp {
         unmuteAllButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override
@@ -134,18 +152,15 @@ public class AmongUsApp {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
             }
         });
         restartButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override
@@ -160,12 +175,10 @@ public class AmongUsApp {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-
             }
         });
         restartButton.addActionListener(event -> restartGame());
@@ -279,6 +292,7 @@ public class AmongUsApp {
 
     public void enableFrame() {
         mainFrame.setEnabled(true);
+        resumeAutoDetection();
     }
 
     private void restartGame() {
@@ -290,5 +304,51 @@ public class AmongUsApp {
         for (Player player : players) {
             player.unKill();
         }
+    }
+
+    private void stopAutoDetection() {
+        screenCapturer.stop();
+        autoDetectionOn = false;
+    }
+
+    private void resumeAutoDetection() {
+        screenCapturer.resume();
+        autoDetectionOn = true;
+        if (autoDetectionThread != null) {
+            if (autoDetectionThread.isAlive()) {
+                return;
+            }
+        }
+        autoDetectionThread = new Thread(new Runnable() {
+            @Override
+            public synchronized void run() {
+                while (autoDetectionOn) {
+                    int state = Comparator.getState(screenCapturer.getScreenshot());
+                    switch (state) {
+                        case Comparator.IN_GAME:
+                            System.out.println("State: in-game");
+                            muteAll();
+                            break;
+                        case Comparator.VOTING:
+                            System.out.println("State: voting");
+                            unmuteAll();
+                            break;
+                        case Comparator.LOBBY:
+                            System.out.println("State: lobby");
+                            restartGame();
+                        case Comparator.UNKNOWN:
+                            System.out.println("State: unknown");
+                            // Do nothing
+                            break;
+                    }
+                    try {
+                        wait(AUT_DET_DELAY);
+                    } catch (InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        });
+        autoDetectionThread.start();
     }
 }
