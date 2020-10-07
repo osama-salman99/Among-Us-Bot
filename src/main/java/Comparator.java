@@ -21,7 +21,7 @@ public abstract class Comparator {
     private static final int LOBBY_X_OFFSET_2 = 899;
     private static final int LOBBY_Y_OFFSET_1 = 930;
     private static final int LOBBY_Y_OFFSET_2 = 102;
-    private static final float accuracy = 0.4F;
+    private static final float accuracy = 0.2F;
     private static boolean initialized;
     private static BufferedImage inGame;
     private static BufferedImage voting;

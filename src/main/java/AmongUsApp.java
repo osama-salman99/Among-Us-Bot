@@ -110,10 +110,11 @@ public class AmongUsApp {
 
         JPanel mutePanel = new JPanel(new GridLayout(1, 2));
         JPanel restartPanel = new JPanel(new GridLayout(1, 1));
+        JPanel statePanel = new JPanel(new GridLayout(1, 1));
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
         JButton restartButton = new JButton(RESTART_TEXT);
-        stateLabel = new JLabel(UNKNOWN_TEXT);
+        stateLabel = new JLabel(UNKNOWN_TEXT, SwingConstants.CENTER);
 
         muteAllButton.addActionListener(event -> muteAll());
         muteAllButton.addMouseListener(new MouseListener() {
@@ -209,28 +210,47 @@ public class AmongUsApp {
         restartButton.setBorderPainted(false);
         restartButton.setContentAreaFilled(false);
 
+        stateLabel.setForeground(Color.WHITE);
+        stateLabel.setOpaque(false);
+
         mutePanel.add(muteAllButton);
         mutePanel.add(unmuteAllButton);
         restartPanel.add(restartButton);
+        statePanel.add(stateLabel);
 
         mutePanel.setBackground(Color.BLACK);
         restartPanel.setBackground(Color.BLACK);
+        statePanel.setBackground(Color.BLACK);
 
-        overlayFrame.add(stateLabel);
+        overlayFrame.add(statePanel);
         overlayFrame.add(mutePanel);
         overlayFrame.add(restartPanel);
     }
 
     private void muteAll() {
         for (Player player : players) {
-            new Thread(player::mute).start();
+            new Thread(() -> {
+                try {
+                    player.mute();
+                } catch (PlayerDisconnectedException exception) {
+                    System.out.println(exception.getMessage());
+                    players.remove(player);
+                }
+            }).start();
         }
         Player.setAllMuted(true);
     }
 
     private void unmuteAll() {
         for (Player player : players) {
-            new Thread(player::unmute).start();
+            new Thread(() -> {
+                try {
+                    player.unmute();
+                } catch (PlayerDisconnectedException exception) {
+                    System.out.println(exception.getMessage());
+                    players.remove(player);
+                }
+            }).start();
         }
         Player.setAllMuted(false);
     }
@@ -311,7 +331,12 @@ public class AmongUsApp {
 
     private void unKillAll() {
         for (Player player : players) {
-            player.unKill();
+            try {
+                player.unKill();
+            } catch (PlayerDisconnectedException exception) {
+                System.out.println(exception.getMessage());
+                players.remove(player);
+            }
         }
     }
 

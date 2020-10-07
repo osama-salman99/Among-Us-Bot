@@ -13,7 +13,11 @@ public class Player {
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
         if (allMuted) {
-            mute();
+            try {
+                mute();
+            } catch (PlayerDisconnectedException exception) {
+                System.out.println(exception.getMessage());
+            }
         }
     }
 
@@ -21,30 +25,35 @@ public class Player {
         Player.allMuted = allMuted;
     }
 
-    public void mute() {
+    public void mute() throws PlayerDisconnectedException {
         muteToggle(true);
         System.out.println(name + " got muted");
     }
 
-    public void unmute() {
+    public void unmute() throws PlayerDisconnectedException {
         if (killed) {
             return;
         }
         muteToggle(false);
     }
 
-    private void muteToggle(boolean mute) {
-        member.mute(mute).submit();
+    private void muteToggle(boolean mute) throws PlayerDisconnectedException {
+        try {
+            member.mute(mute).submit();
+        } catch (IllegalStateException exception) {
+            System.out.println(exception.getMessage());
+            throw new PlayerDisconnectedException(Player.this);
+        }
         System.out.println(name + " got unmuted");
     }
 
-    public void kill() {
+    public void kill() throws PlayerDisconnectedException {
         killed = true;
         playerPanel.putUnKillText();
         mute();
     }
 
-    public void unKill() {
+    public void unKill() throws PlayerDisconnectedException {
         killed = false;
         playerPanel.putKillText();
         if (!allMuted) {
