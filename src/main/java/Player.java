@@ -12,12 +12,14 @@ public class Player {
         this.name = "@" + member.getEffectiveName();
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
-        if (allMuted) {
-            try {
+        try {
+            if (allMuted) {
                 mute();
-            } catch (PlayerDisconnectedException exception) {
-                System.out.println(exception.getMessage());
+            } else {
+                unmute();
             }
+        } catch (PlayerDisconnectedException exception) {
+            System.out.println(exception.getMessage());
         }
     }
 
