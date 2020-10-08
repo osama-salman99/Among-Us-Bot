@@ -403,7 +403,7 @@ public class AmongUsApp {
             public synchronized void run() {
                 hideOverlay();
                 try {
-                    wait(1000);
+                    wait(2000);
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                     showOverlay();
