@@ -57,8 +57,6 @@ public class AmongUsApp {
         mainFrame.setEnabled(false);
     }
 
-    // Hi
-
     private void addButtons() {
         JPanel mainPanel = new JPanel(new GridLayout(4, 1));
         JLabel sizeTextArea = new JLabel(SIZE_PANEL_TEXT, SwingConstants.CENTER);
