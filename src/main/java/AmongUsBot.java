@@ -40,7 +40,7 @@ public class AmongUsBot extends ListenerAdapter {
         } catch (LoginException | InterruptedException exception) {
             exception.printStackTrace();
         }
-        jda.addEventListener(this);
+        jda.addEventListener(AmongUsBot.this);
         new Thread(() -> {
             String password;
             do {
