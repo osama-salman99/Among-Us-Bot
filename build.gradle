@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'junit:junit:4.13'
+    implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     implementation 'net.dv8tion:JDA:4.2.0_204'
 }

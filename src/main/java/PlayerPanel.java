@@ -32,27 +32,23 @@ public class PlayerPanel extends JPanel {
         nameTextField.setHorizontalAlignment(SwingConstants.CENTER);
 
         killButton.addActionListener(event -> {
-            try {
-                if (!player.isKilled()) {
-                    player.kill();
-                } else {
-                    player.unKill();
-                }
-            } catch (PlayerDisconnectedException exception) {
-                System.out.println(exception.getMessage());
+            if (!player.isKilled()) {
+                player.kill();
+            } else {
+                player.unKill();
             }
         });
 
         nameTextField.addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent event) {
+            public void focusGained(FocusEvent e) {
                 if (nameTextField.getText().equals(player.getName())) {
                     nameTextField.setText("");
                 }
             }
 
             @Override
-            public void focusLost(FocusEvent event) {
+            public void focusLost(FocusEvent e) {
                 if (nameTextField.getText().equals("")) {
                     nameTextField.setText(player.getName());
                 }

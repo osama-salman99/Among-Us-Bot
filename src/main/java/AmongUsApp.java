@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AmongUsApp {
     private static final String APP_NAME = "Among Us Bot";
@@ -21,7 +22,7 @@ public class AmongUsApp {
     private static final String VOTING_TEXT = "Voting";
     private static final int MAXIMUM_WIDTH = 300;
     private static final int MINIMUM_WIDTH = 200;
-    private static final int COLUMN_HEIGHT = 25;
+    private static final int COLUMN_HEIGHT = 40;
     private static final int INCREASE_VALUE = 10;
     private static final int AUT_DET_DELAY = 1000; // in milliseconds
     private final ArrayList<Player> players;
@@ -29,11 +30,12 @@ public class AmongUsApp {
     private final int SCREEN_HEIGHT;
     private JFrame mainFrame;
     private JFrame overlayFrame;
-    private JButton stateButton;
+    private JLabel stateLabel;
     private Thread autoDetectionThread;
     private boolean overlayShown;
     private boolean autoDetectionOn;
     private int currentWidth;
+    private AmongUsBot bot;
 
     public AmongUsApp() {
         SCREEN_HEIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -48,6 +50,7 @@ public class AmongUsApp {
         createOverlay();
         showFrame();
         Runtime.getRuntime().addShutdownHook(new Thread(this::unmuteAll));
+        bot = new AmongUsBot(this);
     }
 
     private void initializeFrame() {
@@ -114,9 +117,7 @@ public class AmongUsApp {
         JButton muteAllButton = new JButton(MUTE_TEXT);
         JButton unmuteAllButton = new JButton(UNMUTE_TEXT);
         JButton restartButton = new JButton(RESTART_TEXT);
-        stateButton = new JButton(UNKNOWN_TEXT);
-
-        stateButton.addActionListener(event -> quickHide());
+        stateLabel = new JLabel(UNKNOWN_TEXT, SwingConstants.CENTER);
 
         muteAllButton.addActionListener(event -> muteAll());
         muteAllButton.addMouseListener(new MouseListener() {
@@ -212,16 +213,13 @@ public class AmongUsApp {
         restartButton.setBorderPainted(false);
         restartButton.setContentAreaFilled(false);
 
-        stateButton.setForeground(Color.WHITE);
-        stateButton.setOpaque(false);
-        stateButton.setFocusPainted(false);
-        stateButton.setBorderPainted(false);
-        stateButton.setContentAreaFilled(false);
+        stateLabel.setForeground(Color.WHITE);
+        stateLabel.setOpaque(false);
 
         mutePanel.add(muteAllButton);
         mutePanel.add(unmuteAllButton);
         restartPanel.add(restartButton);
-        statePanel.add(stateButton);
+        statePanel.add(stateLabel);
 
         mutePanel.setBackground(Color.BLACK);
         restartPanel.setBackground(Color.BLACK);
@@ -234,28 +232,19 @@ public class AmongUsApp {
 
     private void muteAll() {
         for (Player player : players) {
-            new Thread(() -> {
-                try {
-                    player.mute();
-                } catch (PlayerDisconnectedException exception) {
-                    System.out.println(exception.getMessage());
-                    players.remove(player);
-                }
-            }).start();
+            try {
+                player.mute();
+            } catch (org.openqa.selenium.StaleElementReferenceException exception) {
+                System.out.println(exception.getMessage());
+                players.remove(player);
+            }
         }
         Player.setAllMuted(true);
     }
 
     private void unmuteAll() {
         for (Player player : players) {
-            new Thread(() -> {
-                try {
-                    player.unmute();
-                } catch (PlayerDisconnectedException exception) {
-                    System.out.println(exception.getMessage());
-                    players.remove(player);
-                }
-            }).start();
+            player.unmute();
         }
         Player.setAllMuted(false);
     }
@@ -330,18 +319,14 @@ public class AmongUsApp {
     }
 
     private void restartGame() {
+        bot.addCurrentPlayers();
         unKillAll();
         unmuteAll();
     }
 
     private void unKillAll() {
         for (Player player : players) {
-            try {
-                player.unKill();
-            } catch (PlayerDisconnectedException exception) {
-                System.out.println(exception.getMessage());
-                players.remove(player);
-            }
+            player.unKill();
         }
     }
 
@@ -361,30 +346,34 @@ public class AmongUsApp {
         autoDetectionThread = new Thread(new Runnable() {
             @Override
             public synchronized void run() {
+                int current_state = -69;
                 while (autoDetectionOn) {
                     BufferedImage screenshot = screenCapturer.getScreenshot();
                     int state = Comparator.getState(screenshot);
-                    switch (state) {
-                        case Comparator.IN_GAME:
-                            System.out.println("State: in-game");
-                            stateButton.setText(IN_GAME_TEXT);
-                            muteAll();
-                            break;
-                        case Comparator.VOTING:
-                            System.out.println("State: voting");
-                            stateButton.setText(VOTING_TEXT);
-                            unmuteAll();
-                            break;
-                        case Comparator.LOBBY:
-                            System.out.println("State: lobby");
-                            stateButton.setText(LOBBY_TEXT);
-                            restartGame();
-                            break;
-                        case Comparator.UNKNOWN:
-                            System.out.println("State: unknown");
-                            stateButton.setText(UNKNOWN_TEXT);
-                            // Do nothing
-                            break;
+                    if(state != current_state) {
+                        current_state = state;
+                        switch (state) {
+                            case Comparator.IN_GAME:
+                                System.out.println("State: in-game");
+                                stateLabel.setText(IN_GAME_TEXT);
+                                muteAll();
+                                break;
+                            case Comparator.VOTING:
+                                System.out.println("State: voting");
+                                stateLabel.setText(VOTING_TEXT);
+                                unmuteAll();
+                                break;
+                            case Comparator.LOBBY:
+                                System.out.println("State: lobby");
+                                stateLabel.setText(LOBBY_TEXT);
+                                restartGame();
+                                break;
+                            case Comparator.UNKNOWN:
+                                System.out.println("State: unknown");
+                                stateLabel.setText(UNKNOWN_TEXT);
+                                // Do nothing
+                                break;
+                        }
                     }
                     try {
                         wait(AUT_DET_DELAY);
@@ -395,21 +384,5 @@ public class AmongUsApp {
             }
         });
         autoDetectionThread.start();
-    }
-
-    private void quickHide() {
-        new Thread(new Runnable() {
-            @Override
-            public synchronized void run() {
-                hideOverlay();
-                try {
-                    wait(2000);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                    showOverlay();
-                }
-                showOverlay();
-            }
-        }).start();
     }
 }

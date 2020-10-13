@@ -1,5 +1,3 @@
-import net.dv8tion.jda.api.entities.Member;
-
 public class Player {
     private static boolean allMuted;
     private final PlayerPanel playerPanel;
@@ -9,17 +7,15 @@ public class Player {
 
     public Player(Member member) {
         this.member = member;
-        this.name = "@" + member.getEffectiveName();
+        this.name = "@" + member.name;
         this.killed = false;
         this.playerPanel = new PlayerPanel(this);
-        try {
-            if (allMuted) {
+        if (allMuted) {
+            try {
                 mute();
-            } else {
-                unmute();
+            } catch (org.openqa.selenium.StaleElementReferenceException exception) {
+                System.out.println(exception.getMessage());
             }
-        } catch (PlayerDisconnectedException exception) {
-            System.out.println(exception.getMessage());
         }
     }
 
@@ -27,35 +23,34 @@ public class Player {
         Player.allMuted = allMuted;
     }
 
-    public void mute() throws PlayerDisconnectedException {
+    public void mute() {
         muteToggle(true);
         System.out.println(name + " got muted");
     }
 
-    public void unmute() throws PlayerDisconnectedException {
+    public void unmute() {
         if (killed) {
             return;
         }
         muteToggle(false);
-    }
-
-    private void muteToggle(boolean mute) throws PlayerDisconnectedException {
-        try {
-            member.mute(mute).submit();
-        } catch (IllegalStateException exception) {
-            System.out.println(exception.getMessage());
-            throw new PlayerDisconnectedException(Player.this);
-        }
         System.out.println(name + " got unmuted");
     }
 
-    public void kill() throws PlayerDisconnectedException {
+    private void muteToggle(boolean mute) {
+        try {
+            member.mute(mute);
+        } catch (IllegalStateException exception) {
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    public void kill() {
         killed = true;
         playerPanel.putUnKillText();
         mute();
     }
 
-    public void unKill() throws PlayerDisconnectedException {
+    public void unKill() {
         killed = false;
         playerPanel.putKillText();
         if (!allMuted) {
@@ -78,10 +73,10 @@ public class Player {
     @Override
     public boolean equals(Object object) {
         if (object instanceof Player) {
-            return member.getEffectiveName().equals(((Player) object).member.getEffectiveName());
+            return member.name.equals(((Player) object).member.name);
         }
         if (object instanceof Member) {
-            return member.getEffectiveName().equals(((Member) object).getEffectiveName());
+            return member.name.equals(((Member) object).name);
         }
         return false;
     }
