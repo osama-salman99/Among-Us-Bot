@@ -99,6 +99,9 @@ public class AmongUsBot extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         super.onGuildMessageReceived(event);
+        if (event.getMessage().getContentRaw().contains("69")) {
+            event.getChannel().sendMessage("nice").submit();
+        }
         if (confirmed) {
             return;
         }

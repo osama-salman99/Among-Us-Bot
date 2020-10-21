@@ -34,6 +34,7 @@ public class AmongUsApp {
     private boolean overlayShown;
     private boolean autoDetectionOn;
     private int currentWidth;
+    private int currentState;
 
     public AmongUsApp() {
         SCREEN_HEIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -361,30 +362,34 @@ public class AmongUsApp {
         autoDetectionThread = new Thread(new Runnable() {
             @Override
             public synchronized void run() {
+                currentState = Comparator.UNKNOWN;
                 while (autoDetectionOn) {
                     BufferedImage screenshot = screenCapturer.getScreenshot();
                     int state = Comparator.getState(screenshot);
-                    switch (state) {
-                        case Comparator.IN_GAME:
-                            System.out.println("State: in-game");
-                            stateButton.setText(IN_GAME_TEXT);
-                            muteAll();
-                            break;
-                        case Comparator.VOTING:
-                            System.out.println("State: voting");
-                            stateButton.setText(VOTING_TEXT);
-                            unmuteAll();
-                            break;
-                        case Comparator.LOBBY:
-                            System.out.println("State: lobby");
-                            stateButton.setText(LOBBY_TEXT);
-                            restartGame();
-                            break;
-                        case Comparator.UNKNOWN:
-                            System.out.println("State: unknown");
-                            stateButton.setText(UNKNOWN_TEXT);
-                            // Do nothing
-                            break;
+                    if (state != currentState) {
+                        currentState = state;
+                        switch (state) {
+                            case Comparator.IN_GAME:
+                                System.out.println("State: in-game");
+                                stateButton.setText(IN_GAME_TEXT);
+                                muteAll();
+                                break;
+                            case Comparator.VOTING:
+                                System.out.println("State: voting");
+                                stateButton.setText(VOTING_TEXT);
+                                unmuteAll();
+                                break;
+                            case Comparator.LOBBY:
+                                System.out.println("State: lobby");
+                                stateButton.setText(LOBBY_TEXT);
+                                restartGame();
+                                break;
+                            case Comparator.UNKNOWN:
+                                System.out.println("State: unknown");
+                                stateButton.setText(UNKNOWN_TEXT);
+                                // Do nothing
+                                break;
+                        }
                     }
                     try {
                         wait(AUT_DET_DELAY);
