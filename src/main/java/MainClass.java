@@ -11,6 +11,5 @@ public class MainClass {
             exception.printStackTrace();
         }
         AmongUsApp app = new AmongUsApp();
-        new AmongUsBot(app);
     }
 }
