@@ -20,7 +20,6 @@ public class AmongUsBot extends ListenerAdapter {
     private static final String PASSWORD_INIT = "Password is: ";
     private static final Pattern PATTERN = Pattern.compile("^" + PASSWORD_INIT + "[a-zA-Z0-9]+$");
     private static final String TOKEN_FILE_PATH = "res/token_file.txt";
-    private static String token;
     private final AmongUsApp app;
     private JDA jda;
     private Guild guild;
@@ -32,9 +31,7 @@ public class AmongUsBot extends ListenerAdapter {
         this.guild = null;
         this.password = null;
         this.confirmed = false;
-        if (token == null) {
-            readToken();
-        }
+        String token = readToken();
         try {
             jda = JDABuilder.createDefault(token).build().awaitReady();
         } catch (LoginException | InterruptedException exception) {
@@ -52,15 +49,15 @@ public class AmongUsBot extends ListenerAdapter {
         }).start();
     }
 
-    private static void readToken() {
+    private static String readToken() {
         Scanner scanner;
         try {
             scanner = new Scanner(new File(TOKEN_FILE_PATH));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return;
+            return null;
         }
-        token = scanner.nextLine();
+        return scanner.nextLine();
     }
 
     private void addCurrentPlayers() {
